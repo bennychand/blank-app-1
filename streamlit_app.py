@@ -31,10 +31,24 @@ if st.session_state.section == "Home":
         for j, emoji in enumerate(row):
             label = exposures[emoji]
             with row_cols[j]:
-                if st.button(f"{emoji}", key=f"emoji_{label}"):
-                    st.session_state.section = label
-                    st.rerun()
-                st.markdown(f"<div style='text-align:center; font-size:20px; font-weight:bold;'>{label}</div>", unsafe_allow_html=True)
+                # Create a large emoji button using markdown and a hidden Streamlit button
+                button_html = f"""
+                <div style='text-align:center;'>
+                    <button style='
+                        background:none;
+                        border:none;
+                        font-size:100px;
+                        cursor:pointer;
+                        padding:0;
+                        margin-bottom:10px;
+                    ' onclick="document.getElementById('{label}_btn').click()">
+                        {emoji}
+                    </button>
+                    <div style='font-size:18px; font-weight:bold;'>{label}</div>
+                </div>
+                """
+                st.markdown(button_html, unsafe_allow_html=True)
+                st.button("", key=f"{label}_btn", on_click=lambda l=label: st.session_state.update({"section": l}))
 if st.session_state.section == "Chemical Exposure":
     st.title("🧪 Chemical Exposure Assessment")
 
