@@ -1,5 +1,4 @@
 import streamlit as st
-
 st.set_page_config(page_title="Exposure Dashboard", layout="wide")
 st.title("🧪 Workplace Exposure Analyzer")
 
