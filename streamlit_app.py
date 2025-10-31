@@ -22,8 +22,48 @@ if st.session_state.section == "Home":
         "🤲": "Vibration Exposure"
     }
 
-    # Inject JavaScript to handle emoji clicks
+    # Inject responsive CSS and JavaScript
     st.markdown("""
+        <style>
+        .emoji-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        .emoji-item {
+            text-align: center;
+            flex: 1 1 150px;
+            max-width: 200px;
+        }
+        .emoji-button {
+            font-size: 18vw;
+            max-font-size: 120px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            background: none;
+            border: none;
+            padding: 0;
+            margin-bottom: 10px;
+        }
+        .emoji-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        }
+        .emoji-label {
+            font-size: 4vw;
+            font-weight: bold;
+        }
+        @media (min-width: 600px) {
+            .emoji-button {
+                font-size: 100px;
+            }
+            .emoji-label {
+                font-size: 20px;
+            }
+        }
+        </style>
         <script>
         function setSection(section) {
             window.parent.postMessage({type: 'streamlit:setSessionState', key: 'section', value: section}, '*');
@@ -32,28 +72,16 @@ if st.session_state.section == "Home":
         </script>
     """, unsafe_allow_html=True)
 
-    emojis = list(exposures.keys())
-    cols = st.columns(3)
-
-    for i in range(0, len(emojis), 3):
-        row = emojis[i:i+3]
-        row_cols = st.columns(len(row))
-        for j, emoji in enumerate(row):
-            label = exposures[emoji]
-            with row_cols[j]:
-                st.markdown(f"""
-                <div style='text-align:center;'>
-                    <button onclick="setSection('{label}')" style='
-                        background:none;
-                        border:none;
-                        font-size:120px;
-                        cursor:pointer;
-                        padding:0;
-                        margin-bottom:10px;
-                    '>{emoji}</button>
-                    <div style='font-size:20px; font-weight:bold;'>{label}</div>
-                </div>
-                """, unsafe_allow_html=True)
+    # Render emoji grid
+    st.markdown("<div class='emoji-grid'>", unsafe_allow_html=True)
+    for emoji, label in exposures.items():
+        st.markdown(f"""
+        <div class='emoji-item'>
+            <button onclick="setSection('{label}')" class="emoji-button">{emoji}</button>
+            <div class='emoji-label'>{label}</div>
+        </div>
+        """, unsafe_allow_html=True)
+    st.markdown("</div>", unsafe_allow_html=True)
 if st.session_state.section == "Chemical Exposure":
     st.title("🧪 Chemical Exposure Assessment")
 
