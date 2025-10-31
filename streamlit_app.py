@@ -190,7 +190,6 @@ elif st.session_state.get("run_analysis") and "df" in st.session_state:
         st.success("✅ Exposure likely acceptable. Continue monitoring.")
     else:
         st.warning("⚠️ Uncertainty remains. Additional sampling or expert review recommended.")
-
     st.subheader("📉 Exposure Distribution")
 
     fig, ax = plt.subplots(figsize=(8, 4))
@@ -206,6 +205,12 @@ elif st.session_state.get("run_analysis") and "df" in st.session_state:
 
     st.subheader("📦 Summary")
 
+    recommendation = (
+        "Implement controls and reassess." if posterior_unacceptable > 0.7 else
+        "Continue monitoring and maintain controls." if posterior_acceptable > 0.7 else
+        "Consider additional sampling or expert review."
+    )
+
     st.markdown(f"""
     <div style='
         background-color:#f9f9f9;
@@ -217,5 +222,11 @@ elif st.session_state.get("run_analysis") and "df" in st.session_state:
         <strong>Mean Exposure:</strong> {mean:.2f} ppm<br>
         <strong>95% CI:</strong> ({ci_low:.2f}, {ci_high:.2f}) ppm<br>
         <strong>Posterior (Unacceptable):</strong> {posterior_unacceptable:.2f}<br>
-        <strong>Recommendation:</strong> {
-            "Implement controls and reassess." if posterior_unacceptable > 0.7
+        <strong>Recommendation:</strong> {recommendation}
+    </div>
+    """, unsafe_allow_html=True)
+
+    if st.button("⬅️ Back to Chemical Input", key="back_to_chemical"):
+        st.session_state.section = "Chemical Exposure"
+        st.session_state.run_analysis = False
+        st.rerun()
