@@ -2,18 +2,16 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from datetime import datetime
 
 st.set_page_config(page_title="Exposure Analyzer", layout="wide")
 
-# Initialize session state
 if "section" not in st.session_state:
     st.session_state.section = "Home"
 
 # Homepage
 if st.session_state.section == "Home":
     st.title("🧪 Workplace Exposure Analyzer")
-    st.markdown("### Select an Exposure Type")
+    st.markdown("### Choose an Exposure Type")
 
     exposures = {
         "🧪": "Chemical Exposure",
@@ -33,11 +31,10 @@ if st.session_state.section == "Home":
         for j, emoji in enumerate(row):
             label = exposures[emoji]
             with row_cols[j]:
-                st.markdown(f"<div style='text-align:center; font-size:80px;'>{emoji}</div>", unsafe_allow_html=True)
-                st.markdown(f"<div style='text-align:center; font-weight:bold; font-size:18px;'>{label}</div>", unsafe_allow_html=True)
-                if st.button(f"Go to {label}", key=f"go_{label}"):
+                if st.button(f"{emoji}", key=f"emoji_{label}"):
                     st.session_state.section = label
                     st.rerun()
+                st.markdown(f"<div style='text-align:center; font-size:20px; font-weight:bold;'>{label}</div>", unsafe_allow_html=True)
 if st.session_state.section == "Chemical Exposure":
     st.title("🧪 Chemical Exposure Assessment")
 
@@ -46,8 +43,8 @@ if st.session_state.section == "Chemical Exposure":
     df = pd.DataFrame()
 
     if input_method == "Manual Entry":
-        chem_name = st.text_input("Chemical Name", value="Chemical A", key="chem_name")
-        values = st.text_area("Exposure Values (comma-separated)", "12, 45, 60, 5, 80", key="manual_values")
+        chem_name = st.text_input("Chemical Name", key="chem_name")
+        values = st.text_area("Exposure Values (comma-separated)", key="manual_values")
         try:
             exposure_values = [float(v.strip()) for v in values.split(",") if v.strip()]
             df = pd.DataFrame({"Chemical": [chem_name] * len(exposure_values), "Exposure": exposure_values})
@@ -61,16 +58,13 @@ if st.session_state.section == "Chemical Exposure":
                 st.error("CSV must contain 'Chemical' and 'Exposure' columns.")
 
     st.subheader("📝 Assessment Metadata")
-    org = st.text_input("Organization", value="Acme Chemicals Ltd.", key="org")
-    loc = st.text_input("Location", value="Norwich, UK", key="loc")
-    proc = st.text_input("Process", value="Batch Reactor Cleaning", key="proc")
+    org = st.text_input("Organization", key="org")
+    loc = st.text_input("Location", key="loc")
+    proc = st.text_input("Process", key="proc")
     etype = st.selectbox("Exposure Type", ["Full-shift", "Short-term", "Instantaneous"], key="etype")
-    limit = st.number_input("Exposure Limit (ppm)", min_value=0.0, value=50.0, key="limit")
+    limit = st.number_input("Exposure Limit (ppm)", min_value=0.0, key="limit")
 
     if not df.empty:
-        st.subheader("📊 Preview Data")
-        st.dataframe(df, use_container_width=True)
-
         if st.button("▶️ Run Analysis", key="run_analysis_btn"):
             st.session_state.update({
                 "run_analysis": True,
@@ -82,8 +76,6 @@ if st.session_state.section == "Chemical Exposure":
                 "limit": limit
             })
             st.rerun()
-    else:
-        st.info("Please enter or upload exposure data to continue.")
 
     if st.button("⬅️ Back to Home", key="back_home_chemical"):
         st.session_state.section = "Home"
