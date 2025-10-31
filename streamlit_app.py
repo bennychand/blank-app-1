@@ -4,6 +4,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Initialize session state
+if "section" not in st.session_state:
+    st.session_state.section = "Home"
+
+section = st.session_state.section
+
+# 🏠 Homepage
 if section == "Home":
     st.title("🧪 Workplace Exposure Analyzer")
     st.markdown("### Choose an Exposure Type")
