@@ -4,7 +4,7 @@ import numpy as np
 import json, os
 from datetime import datetime
 
-st.set_page_config(page_title="Chemical Exposure", layout="wide")
+st.set_page_config(page_title="Chemical Exposure")
 st.title("🧪 Chemical Exposure Assessment")
 
 SESSIONS_FILE = "chemical_sessions.json"
