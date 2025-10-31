@@ -16,8 +16,8 @@ exposures = {
 }
 
 # Create responsive layout
-cols = st.columns(3)
 emojis = list(exposures.keys())
+cols = st.columns(3)
 
 for i in range(0, len(emojis), 3):
     row = emojis[i:i+3]
@@ -25,8 +25,19 @@ for i in range(0, len(emojis), 3):
     for j, emoji in enumerate(row):
         label, page = exposures[emoji]
         with row_cols[j]:
-            # Clickable emoji styled as a button
-            if st.button(emoji, key=emoji):
-                st.session_state["selected_exposure"] = label
-                st.switch_page(f"{page}.py")
-            st.markdown(f"<div style='text-align:center; font-weight:bold;'>{label}</div>", unsafe_allow_html=True)
+            # Create a visually styled emoji button
+            button_html = f"""
+            <div style='text-align:center; margin-top:20px;'>
+                <form action='/{page}'>
+                    <button style='
+                        font-size:80px;
+                        background:none;
+                        border:none;
+                        cursor:pointer;
+                        padding:10px;
+                    '>{emoji}</button>
+                </form>
+                <div style='font-size:18px; font-weight:bold; margin-top:10px;'>{label}</div>
+            </div>
+            """
+            st.markdown(button_html, unsafe_allow_html=True)
