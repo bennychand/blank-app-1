@@ -73,7 +73,6 @@ if st.session_state.section == "Chemical Exposure":
                 "location": loc,
                 "process": proc,
                 "exposure_type": etype,
-                "limit": limit
             })
             st.rerun()
 
