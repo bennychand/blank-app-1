@@ -1,5 +1,3 @@
-# exposure_app.py
-
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -9,68 +7,39 @@ from datetime import datetime
 
 st.set_page_config(page_title="Exposure Analyzer", layout="wide")
 
-# --- Session File ---
-SESSIONS_FILE = "chemical_sessions.json"
+# --- Session Setup ---
+if "section" not in st.session_state:
+    st.session_state.section = "Home"
 
-def load_sessions():
-    if os.path.exists(SESSIONS_FILE):
-        with open(SESSIONS_FILE, "r") as f:
-            return json.load(f)
-    return {}
-
-def save_session(session_id, data):
-    sessions = load_sessions()
-    sessions[session_id] = data
-    with open(SESSIONS_FILE, "w") as f:
-        json.dump(sessions, f, indent=2)
-
-def delete_session(session_id):
-    sessions = load_sessions()
-    if session_id in sessions:
-        del sessions[session_id]
-        with open(SESSIONS_FILE, "w") as f:
-            json.dump(sessions, f, indent=2)
-
-# --- Sidebar Navigation ---
-st.sidebar.title("🧭 Navigation")
-section = st.sidebar.radio("Go to", ["Home", "Chemical Exposure"])
-
-# --- Sidebar Session Controls ---
-if section == "Chemical Exposure":
-    st.sidebar.header("📂 Saved Sessions")
-    sessions = load_sessions()
-    session_ids = list(sessions.keys())
-
-    if session_ids:
-        selected = st.sidebar.selectbox("Load session", session_ids)
-        if st.sidebar.button("Load"):
-            data = sessions[selected]
-            st.session_state.update({
-                "organization": data["organization"],
-                "location": data["location"],
-                "process": data["process"],
-                "exposure_type": data["exposure_type"],
-                "limit": data["limit"],
-                "df": pd.DataFrame(data["data"]),
-                "run_analysis": True
-            })
-            st.rerun()
-
-        with st.sidebar.expander("🗑️ Delete session"):
-            to_delete = st.selectbox("Select session", session_ids, key="delete_select")
-            confirm = st.checkbox("Yes, delete this session", key="confirm_delete")
-            if st.button("Delete", key="delete_button") and confirm:
-                delete_session(to_delete)
-                st.success(f"Deleted session: {to_delete}")
-                st.rerun()
-    else:
-        st.sidebar.info("No saved sessions yet.")
-
-# --- Home Page ---
-if section == "Home":
+# --- Navigation Buttons ---
+if st.session_state.section == "Home":
     st.title("🧪 Workplace Exposure Analyzer")
-    st.markdown("Welcome! Use the sidebar to begin a chemical exposure assessment.")
-if section == "Chemical Exposure":
+    st.markdown("### Select an Exposure Type")
+
+    exposures = {
+        "🧪": "Chemical Exposure",
+        "🔊": "Noise Exposure",
+        "☢️": "Radiation Exposure",
+        "🦠": "Legionella",
+        "🌡️": "Heat Stress",
+        "🤲": "Vibration Exposure"
+    }
+
+    emojis = list(exposures.keys())
+    cols = st.columns(3)
+
+    for i in range(0, len(emojis), 3):
+        row = emojis[i:i+3]
+        row_cols = st.columns(len(row))
+        for j, emoji in enumerate(row):
+            label = exposures[emoji]
+            with row_cols[j]:
+                st.markdown(f"<div style='text-align:center; font-size:80px;'>{emoji}</div>", unsafe_allow_html=True)
+                st.markdown(f"<div style='text-align:center; font-weight:bold; font-size:18px;'>{label}</div>", unsafe_allow_html=True)
+                if st.button(f"Go to {label}", key=label):
+                    st.session_state.section = label
+                    st.rerun()
+if st.session_state.section == "Chemical Exposure":
     st.title("🧪 Chemical Exposure Assessment")
 
     st.subheader("📥 Enter Exposure Data")
@@ -104,15 +73,6 @@ if section == "Chemical Exposure":
         st.dataframe(df, use_container_width=True)
 
         if st.button("▶️ Run Analysis"):
-            session_id = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            save_session(session_id, {
-                "organization": org,
-                "location": loc,
-                "process": proc,
-                "exposure_type": etype,
-                "limit": limit,
-                "data": df.to_dict(orient="records")
-            })
             st.session_state.update({
                 "run_analysis": True,
                 "df": df,
@@ -125,6 +85,10 @@ if section == "Chemical Exposure":
             st.rerun()
     else:
         st.info("Please enter or upload exposure data to continue.")
+
+    if st.button("⬅️ Back to Home"):
+        st.session_state.section = "Home"
+        st.rerun()
     # --- Analysis Section ---
     if st.session_state.get("run_analysis") and "df" in st.session_state:
         df = st.session_state["df"]
@@ -189,6 +153,10 @@ if section == "Chemical Exposure":
             st.success("✅ Exposure likely acceptable. Continue monitoring.")
         else:
             st.warning("⚠️ Uncertainty remains. Additional sampling or expert review recommended.")
+
+        if st.button("⬅️ Back to Home"):
+            st.session_state.section = "Home"
+            st.rerun()
         # --- Visualization ---
         st.subheader("📉 Exposure Distribution")
 
@@ -225,8 +193,17 @@ if section == "Chemical Exposure":
         </div>
         """, unsafe_allow_html=True)
 
-        # --- Option to Start Over ---
-        if st.button("🔄 Start New Assessment"):
-            for key in ["organization", "location", "process", "exposure_type", "limit", "df", "run_analysis"]:
-                st.session_state.pop(key, None)
-            st.rerun()
+        # --- Navigation Options ---
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("🔄 Start New Assessment"):
+                for key in ["organization", "location", "process", "exposure_type", "limit", "df", "run_analysis"]:
+                    st.session_state.pop(key, None)
+                st.session_state.section = "Chemical Exposure"
+                st.rerun()
+        with col2:
+            if st.button("⬅️ Back to Home"):
+                for key in ["organization", "location", "process", "exposure_type", "limit", "df", "run_analysis"]:
+                    st.session_state.pop(key, None)
+                st.session_state.section = "Home"
+                st.rerun()
