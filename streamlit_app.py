@@ -22,24 +22,18 @@ if st.session_state.section == "Home":
         "🤲": "Vibration Exposure"
     }
 
-    # Inject responsive CSS and JavaScript
+    # Inject CSS and JavaScript for responsive layout and emoji interactivity
     st.markdown("""
         <style>
         .emoji-grid {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 30px;
+            justify-items: center;
             margin-top: 20px;
         }
-        .emoji-item {
-            text-align: center;
-            flex: 1 1 150px;
-            max-width: 200px;
-        }
         .emoji-button {
-            font-size: 18vw;
-            max-font-size: 120px;
+            font-size: 100px;
             cursor: pointer;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
             background: none;
@@ -52,15 +46,16 @@ if st.session_state.section == "Home":
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
         }
         .emoji-label {
-            font-size: 4vw;
+            font-size: 18px;
             font-weight: bold;
+            text-align: center;
         }
-        @media (min-width: 600px) {
+        @media (max-width: 600px) {
             .emoji-button {
-                font-size: 100px;
+                font-size: 20vw;
             }
             .emoji-label {
-                font-size: 20px;
+                font-size: 5vw;
             }
         }
         </style>
@@ -76,9 +71,9 @@ if st.session_state.section == "Home":
     st.markdown("<div class='emoji-grid'>", unsafe_allow_html=True)
     for emoji, label in exposures.items():
         st.markdown(f"""
-        <div class='emoji-item'>
+        <div>
             <button onclick="setSection('{label}')" class="emoji-button">{emoji}</button>
-            <div class='emoji-label'>{label}</div>
+            <div class="emoji-label">{label}</div>
         </div>
         """, unsafe_allow_html=True)
     st.markdown("</div>", unsafe_allow_html=True)
