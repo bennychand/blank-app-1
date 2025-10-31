@@ -33,5 +33,6 @@ for i in range(0, len(emojis), 3):
                 f"<div style='text-align:center; font-weight:bold; font-size:18px;'>{label}</div>",
                 unsafe_allow_html=True
             )
-            if st.button(f"Go to {label}", key=label):
+if st.button(f"Go to {label}", key=label):
     st.switch_page(page)
+
