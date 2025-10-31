@@ -7,6 +7,11 @@ import matplotlib.pyplot as plt
 if "section" not in st.session_state:
     st.session_state.section = "Home"
 
+# Fallback rerun trigger using query param
+if st.query_params.get("section") and st.query_params["section"] != st.session_state.section:
+    st.session_state.section = st.query_params["section"]
+    st.rerun()
+
 section = st.session_state.section
 
 # 🏠 Homepage
@@ -49,6 +54,9 @@ if section == "Home":
         </style>
         <script>
         function setSection(section) {
+            const url = new URL(window.location.href);
+            url.searchParams.set("section", section);
+            window.history.replaceState({}, '', url);
             window.parent.postMessage({type: 'streamlit:setSessionState', key: 'section', value: section}, '*');
             window.parent.postMessage({type: 'streamlit:rerun'}, '*');
         }
