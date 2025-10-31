@@ -5,7 +5,7 @@ st.title("🧪 Workplace Exposure Analyzer")
 
 st.markdown("### Select an Exposure Type")
 
-# Define exposure categories with emoji and page titles
+# Define emoji buttons and their corresponding page titles
 exposures = {
     "🧪": "Chemical Exposure",
     "🔊": "Noise Exposure",
