@@ -7,12 +7,12 @@ st.markdown("### Select an Exposure Type")
 
 # Define exposure categories with emoji and page filenames
 exposures = {
-    "🧪": ("Chemical Exposure", "chemical_exposure"),
-    "🔊": ("Noise Exposure", "noise_exposure"),
-    "☢️": ("Radiation Exposure", "radiation_exposure"),
-    "🦠": ("Legionella", "legionella"),
-    "🌡️": ("Heat Stress", "heat_stress"),
-    "🤲": ("Vibration Exposure", "vibration_exposure")
+    "🧪": ("Chemical Exposure", "Chemical Exposure"),
+    "🔊": ("Noise Exposure", "Noise Exposure"),
+    "☢️": ("Radiation Exposure", "Radiation Exposure"),
+    "🦠": ("Legionella", "Legionella"),
+    "🌡️": ("Heat Stress", "Heat Stress"),
+    "🤲": ("Vibration Exposure", "Vibration Exposure")
 }
 
 # Create responsive layout
@@ -34,4 +34,4 @@ for i in range(0, len(emojis), 3):
                 unsafe_allow_html=True
             )
             if st.button(f"Go to {label}", key=label):
-                st.switch_page(f"{page}.py")
+    st.switch_page(page)
