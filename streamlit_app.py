@@ -6,8 +6,6 @@ import matplotlib.pyplot as plt
 st.set_page_config(page_title="Exposure Analyzer", layout="wide")
 
 if "section" not in st.session_state:
-    st.session_state.section = "Home"
-
 # Homepage
 if st.session_state.section == "Home":
     st.title("🧪 Workplace Exposure Analyzer")
