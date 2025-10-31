@@ -27,16 +27,18 @@ if st.session_state.section == "Home":
         <style>
         .emoji-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 40px;
             justify-items: center;
-            margin-top: 20px;
+            align-items: center;
+            margin-top: 30px;
         }
         .emoji-item {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            text-align: center;
         }
         .emoji-button {
             font-size: 100px;
@@ -46,7 +48,6 @@ if st.session_state.section == "Home":
             border: none;
             padding: 0;
             margin-bottom: 10px;
-            text-align: center;
         }
         .emoji-button:hover {
             transform: scale(1.1);
@@ -55,7 +56,6 @@ if st.session_state.section == "Home":
         .emoji-label {
             font-size: 18px;
             font-weight: bold;
-            text-align: center;
         }
         @media (max-width: 600px) {
             .emoji-button {
