@@ -7,8 +7,12 @@ st.set_page_config(page_title="Exposure Analyzer", layout="wide")
 
 if "section" not in st.session_state:
     st.session_state.section = "Home"
-# Homepage
-if st.session_state.section == "Home":
+
+# Routing logic
+section = st.session_state.section
+
+# 🏠 Homepage
+if section == "Home":
     st.title("🧪 Workplace Exposure Analyzer")
     st.markdown("### Choose an Exposure Type")
 
@@ -66,7 +70,9 @@ if st.session_state.section == "Home":
                     <div class="emoji-label">{label}</div>
                 </div>
                 """, unsafe_allow_html=True)
-if st.session_state.section == "Chemical Exposure":
+
+# 🧪 Chemical Exposure Section
+elif section == "Chemical Exposure":
     st.title("🧪 Chemical Exposure Assessment")
 
     st.subheader("📥 Enter Exposure Data")
