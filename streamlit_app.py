@@ -7,11 +7,6 @@ import matplotlib.pyplot as plt
 if "section" not in st.session_state:
     st.session_state.section = "Home"
 
-# Fallback rerun trigger using query param
-if st.query_params.get("section") and st.query_params["section"] != st.session_state.section:
-    st.session_state.section = st.query_params["section"]
-    st.rerun()
-
 section = st.session_state.section
 
 # 🏠 Homepage
@@ -28,7 +23,7 @@ if section == "Home":
         "🤲": "Vibration Exposure"
     }
 
-    # Inject hover effects and JS navigation
+    # Inject hover effects (unchanged)
     st.markdown("""
         <style>
         .emoji-button {
@@ -52,15 +47,6 @@ if section == "Home":
             text-align: center;
         }
         </style>
-        <script>
-        function setSection(section) {
-            const url = new URL(window.location.href);
-            url.searchParams.set("section", section);
-            window.history.replaceState({}, '', url);
-            window.parent.postMessage({type: 'streamlit:setSessionState', key: 'section', value: section}, '*');
-            window.parent.postMessage({type: 'streamlit:rerun'}, '*');
-        }
-        </script>
     """, unsafe_allow_html=True)
 
     # Render emojis in rows of 3 using st.columns
@@ -70,12 +56,21 @@ if section == "Home":
         cols = st.columns(len(row))
         for col, (emoji, label) in zip(cols, row):
             with col:
+                clicked = st.button(
+                    label="",
+                    key=f"{label}_btn",
+                    help=label,
+                    use_container_width=True,
+                )
                 st.markdown(f"""
                 <div style='text-align:center;'>
-                    <button onclick="setSection('{label}')" class="emoji-button">{emoji}</button>
+                    <div class="emoji-button">{emoji}</div>
                     <div class="emoji-label">{label}</div>
                 </div>
                 """, unsafe_allow_html=True)
+                if clicked:
+                    st.session_state.section = label
+                    st.rerun()
 
 # 🧪 Chemical Exposure Section
 elif section == "Chemical Exposure":
