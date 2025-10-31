@@ -32,6 +32,12 @@ if st.session_state.section == "Home":
             justify-items: center;
             margin-top: 20px;
         }
+        .emoji-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
         .emoji-button {
             font-size: 100px;
             cursor: pointer;
@@ -40,6 +46,7 @@ if st.session_state.section == "Home":
             border: none;
             padding: 0;
             margin-bottom: 10px;
+            text-align: center;
         }
         .emoji-button:hover {
             transform: scale(1.1);
@@ -71,12 +78,13 @@ if st.session_state.section == "Home":
     st.markdown("<div class='emoji-grid'>", unsafe_allow_html=True)
     for emoji, label in exposures.items():
         st.markdown(f"""
-        <div>
+        <div class='emoji-item'>
             <button onclick="setSection('{label}')" class="emoji-button">{emoji}</button>
             <div class="emoji-label">{label}</div>
         </div>
         """, unsafe_allow_html=True)
     st.markdown("</div>", unsafe_allow_html=True)
+
 if st.session_state.section == "Chemical Exposure":
     st.title("🧪 Chemical Exposure Assessment")
 
