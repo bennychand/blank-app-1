@@ -23,10 +23,10 @@ if section == "Home":
         "🤲": "Vibration Exposure"
     }
 
-    # Inject CSS (unchanged styling, now with label inside button)
+    # Inject CSS (unchanged)
     st.markdown("""
         <style>
-        .emoji-button {
+        .emoji-tile {
             font-size: 100px;
             cursor: pointer;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -37,16 +37,14 @@ if section == "Home":
             text-align: center;
             width: 100%;
         }
-        .emoji-button:hover {
+        .emoji-tile:hover {
             transform: scale(1.1);
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
         }
         .emoji-label {
-            display: block;
             font-size: 18px;
             font-weight: bold;
             text-align: center;
-            margin-top: 10px;
         }
         </style>
     """, unsafe_allow_html=True)
@@ -59,13 +57,16 @@ if section == "Home":
         for col, (emoji, label) in zip(cols, row):
             with col:
                 with st.form(key=f"{label}_form", clear_on_submit=True):
-                    clicked = st.form_submit_button(
-                        label=f"{emoji}<div class='emoji-label'>{label}</div>",
-                        use_container_width=True
-                    )
+                    st.markdown(f"""
+                    <div class="emoji-tile">{emoji}<br>
+                        <div class="emoji-label">{label}</div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    clicked = st.form_submit_button(label="", use_container_width=True)
                     if clicked:
                         st.session_state.section = label
                         st.rerun()
+
 
 
 # 🧪 Chemical Exposure Section
