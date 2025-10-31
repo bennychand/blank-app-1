@@ -68,7 +68,7 @@ if st.session_state.section == "Home":
                 </div>
                 """, unsafe_allow_html=True)
 
-if st.session_state.section == "Chemical Exposure":
+elif st.session_state.section == "Chemical Exposure":
     st.title("🧪 Chemical Exposure Assessment")
 
     st.subheader("📥 Enter Exposure Data")
