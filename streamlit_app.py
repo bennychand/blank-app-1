@@ -48,6 +48,7 @@ if st.session_state.section == "Home":
                 </div>
                 """
                 st.markdown(button_html, unsafe_allow_html=True)
+                st.button("", key=f"{label}_btn", on_click=lambda l=label: st.session_state.update({"section": l}))
 if st.session_state.section == "Chemical Exposure":
     st.title("🧪 Chemical Exposure Assessment")
 
