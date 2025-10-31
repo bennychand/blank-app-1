@@ -49,27 +49,24 @@ if section == "Home":
         </style>
     """, unsafe_allow_html=True)
 
-    # Use a form to capture which emoji was clicked
-    with st.form("emoji_form", clear_on_submit=True):
-        emoji_items = list(exposures.items())
-        for i in range(0, len(emoji_items), 3):
-            row = emoji_items[i:i+3]
-            cols = st.columns(len(row))
-            for col, (emoji, label) in zip(cols, row):
-                with col:
-                    submitted = st.form_submit_button(
-                        label=f"""
-                        <div class="emoji-tile">
-                            {emoji}<br>
-                            <div class="emoji-label">{label}</div>
-                        </div>
-                        """,
-                        use_container_width=True,
-                        help=label
-                    )
-                    if submitted:
+    # Render emoji tiles using columns and hidden buttons
+    emoji_items = list(exposures.items())
+    for i in range(0, len(emoji_items), 3):
+        row = emoji_items[i:i+3]
+        cols = st.columns(len(row))
+        for col, (emoji, label) in zip(cols, row):
+            with col:
+                with st.form(key=f"{label}_form", clear_on_submit=True):
+                    st.markdown(f"""
+                    <div class="emoji-tile">{emoji}<br>
+                        <div class="emoji-label">{label}</div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    clicked = st.form_submit_button(label="", use_container_width=True)
+                    if clicked:
                         st.session_state.section = label
                         st.rerun()
+
 
 # 🧪 Chemical Exposure Section
 elif section == "Chemical Exposure":
