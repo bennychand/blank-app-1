@@ -4,12 +4,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Initialize session state
-if "section" not in st.session_state:
-    st.session_state.section = "Home"
-
-section = st.session_state.section
-
-# 🏠 Homepage
 if section == "Home":
     st.title("🧪 Workplace Exposure Analyzer")
     st.markdown("### Choose an Exposure Type")
@@ -23,10 +17,10 @@ if section == "Home":
         "🤲": "Vibration Exposure"
     }
 
-    # Inject CSS (unchanged)
+    # Inject CSS (unchanged styling, now with label inside button)
     st.markdown("""
         <style>
-        .emoji-tile {
+        .emoji-button {
             font-size: 100px;
             cursor: pointer;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -37,14 +31,16 @@ if section == "Home":
             text-align: center;
             width: 100%;
         }
-        .emoji-tile:hover {
+        .emoji-button:hover {
             transform: scale(1.1);
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
         }
         .emoji-label {
+            display: block;
             font-size: 18px;
             font-weight: bold;
             text-align: center;
+            margin-top: 10px;
         }
         </style>
     """, unsafe_allow_html=True)
@@ -57,12 +53,10 @@ if section == "Home":
         for col, (emoji, label) in zip(cols, row):
             with col:
                 with st.form(key=f"{label}_form", clear_on_submit=True):
-                    st.markdown(f"""
-                    <div class="emoji-tile">{emoji}<br>
-                        <div class="emoji-label">{label}</div>
-                    </div>
-                    """, unsafe_allow_html=True)
-                    clicked = st.form_submit_button(label="", use_container_width=True)
+                    clicked = st.form_submit_button(
+                        label=f"{emoji}<div class='emoji-label'>{label}</div>",
+                        use_container_width=True
+                    )
                     if clicked:
                         st.session_state.section = label
                         st.rerun()
