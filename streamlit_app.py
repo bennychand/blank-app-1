@@ -7,7 +7,7 @@ st.set_page_config(page_title="Exposure Analyzer", layout="wide")
 
 if "section" not in st.session_state:
 # Homepage
-if st.session_state.section == "Home":
+st.session_state.section == "Home":
     st.title("🧪 Workplace Exposure Analyzer")
     st.markdown("### Choose an Exposure Type")
 
