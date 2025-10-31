@@ -5,9 +5,14 @@ import matplotlib.pyplot as plt
 
 st.set_page_config(page_title="Exposure Analyzer", layout="wide")
 
+# Initialize session state
 if "section" not in st.session_state:
-# Homepage
-st.session_state.section == "Home":
+    st.session_state.section = "Home"
+
+# Routing logic
+section = st.session_state.section
+
+if section == "Home":
     st.title("🧪 Workplace Exposure Analyzer")
     st.markdown("### Choose an Exposure Type")
 
@@ -20,9 +25,24 @@ st.session_state.section == "Home":
         "🤲": "Vibration Exposure"
     }
 
-    # Inject hover effects and JS navigation
+    # Inject CSS and JavaScript
     st.markdown("""
         <style>
+        .emoji-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 40px;
+            justify-items: center;
+            align-items: center;
+            margin-top: 30px;
+        }
+        .emoji-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
         .emoji-button {
             font-size: 100px;
             cursor: pointer;
@@ -31,8 +51,6 @@ st.session_state.section == "Home":
             border: none;
             padding: 0;
             margin-bottom: 10px;
-            text-align: center;
-            width: 100%;
         }
         .emoji-button:hover {
             transform: scale(1.1);
@@ -41,7 +59,14 @@ st.session_state.section == "Home":
         .emoji-label {
             font-size: 18px;
             font-weight: bold;
-            text-align: center;
+        }
+        @media (max-width: 600px) {
+            .emoji-button {
+                font-size: 20vw;
+            }
+            .emoji-label {
+                font-size: 5vw;
+            }
         }
         </style>
         <script>
@@ -52,21 +77,18 @@ st.session_state.section == "Home":
         </script>
     """, unsafe_allow_html=True)
 
-    # Render emojis in rows of 3 using st.columns
-    emoji_items = list(exposures.items())
-    for i in range(0, len(emoji_items), 3):
-        row = emoji_items[i:i+3]
-        cols = st.columns(len(row))
-        for col, (emoji, label) in zip(cols, row):
-            with col:
-                st.markdown(f"""
-                <div style='text-align:center;'>
-                    <button onclick="setSection('{label}')" class="emoji-button">{emoji}</button>
-                    <div class="emoji-label">{label}</div>
-                </div>
-                """, unsafe_allow_html=True)
+    # Render emoji grid
+    st.markdown("<div class='emoji-grid'>", unsafe_allow_html=True)
+    for emoji, label in exposures.items():
+        st.markdown(f"""
+        <div class='emoji-item'>
+            <button onclick="setSection('{label}')" class="emoji-button">{emoji}</button>
+            <div class="emoji-label">{label}</div>
+        </div>
+        """, unsafe_allow_html=True)
+    st.markdown("</div>", unsafe_allow_html=True)
 
-elif st.session_state.section == "Chemical Exposure":
+elif section == "Chemical Exposure":
     st.title("🧪 Chemical Exposure Assessment")
 
     st.subheader("📥 Enter Exposure Data")
@@ -103,14 +125,15 @@ elif st.session_state.section == "Chemical Exposure":
                 "organization": org,
                 "location": loc,
                 "process": proc,
-                "exposure_type": etype,
+                "exposure_type": etype
             })
             st.rerun()
 
     if st.button("⬅️ Back to Home", key="back_home_chemical"):
         st.session_state.section = "Home"
         st.rerun()
-if st.session_state.get("run_analysis") and "df" in st.session_state:
+
+elif st.session_state.get("run_analysis") and "df" in st.session_state:
     df = st.session_state["df"]
     limit = st.session_state["limit"]
 
@@ -167,6 +190,7 @@ if st.session_state.get("run_analysis") and "df" in st.session_state:
         st.success("✅ Exposure likely acceptable. Continue monitoring.")
     else:
         st.warning("⚠️ Uncertainty remains. Additional sampling or expert review recommended.")
+
     st.subheader("📉 Exposure Distribution")
 
     fig, ax = plt.subplots(figsize=(8, 4))
@@ -194,23 +218,4 @@ if st.session_state.get("run_analysis") and "df" in st.session_state:
         <strong>95% CI:</strong> ({ci_low:.2f}, {ci_high:.2f}) ppm<br>
         <strong>Posterior (Unacceptable):</strong> {posterior_unacceptable:.2f}<br>
         <strong>Recommendation:</strong> {
-            "Implement controls and reassess." if posterior_unacceptable > 0.7 else
-            "Continue monitoring and maintain controls." if posterior_acceptable > 0.7 else
-            "Consider additional sampling or expert review."
-        }
-    </div>
-    """, unsafe_allow_html=True)
-
-    col1, col2 = st.columns(2)
-    with col1:
-        if st.button("🔄 Start New Assessment", key="new_assessment"):
-            for key in ["organization", "location", "process", "exposure_type", "limit", "df", "run_analysis"]:
-                st.session_state.pop(key, None)
-            st.session_state.section = "Chemical Exposure"
-            st.rerun()
-    with col2:
-        if st.button("⬅️ Back to Home", key="back_home_analysis"):
-            for key in ["organization", "location", "process", "exposure_type", "limit", "df", "run_analysis"]:
-                st.session_state.pop(key, None)
-            st.session_state.section = "Home"
-            st.rerun()
+            "Implement controls and reassess." if posterior_unacceptable > 0.7
