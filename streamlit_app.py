@@ -23,21 +23,21 @@ if section == "Home":
         "🤲": "Vibration Exposure"
     }
 
-    # Inject hover effects (unchanged)
+    # Inject CSS (unchanged)
     st.markdown("""
         <style>
-        .emoji-button {
+        .emoji-tile {
             font-size: 100px;
             cursor: pointer;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
             background: none;
             border: none;
-            padding: 0;
+            padding: 10px;
             margin-bottom: 10px;
             text-align: center;
             width: 100%;
         }
-        .emoji-button:hover {
+        .emoji-tile:hover {
             transform: scale(1.1);
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
         }
@@ -49,28 +49,27 @@ if section == "Home":
         </style>
     """, unsafe_allow_html=True)
 
-    # Render emojis in rows of 3 using st.columns
-    emoji_items = list(exposures.items())
-    for i in range(0, len(emoji_items), 3):
-        row = emoji_items[i:i+3]
-        cols = st.columns(len(row))
-        for col, (emoji, label) in zip(cols, row):
-            with col:
-                clicked = st.button(
-                    label="",
-                    key=f"{label}_btn",
-                    help=label,
-                    use_container_width=True,
-                )
-                st.markdown(f"""
-                <div style='text-align:center;'>
-                    <div class="emoji-button">{emoji}</div>
-                    <div class="emoji-label">{label}</div>
-                </div>
-                """, unsafe_allow_html=True)
-                if clicked:
-                    st.session_state.section = label
-                    st.rerun()
+    # Use a form to capture which emoji was clicked
+    with st.form("emoji_form", clear_on_submit=True):
+        emoji_items = list(exposures.items())
+        for i in range(0, len(emoji_items), 3):
+            row = emoji_items[i:i+3]
+            cols = st.columns(len(row))
+            for col, (emoji, label) in zip(cols, row):
+                with col:
+                    submitted = st.form_submit_button(
+                        label=f"""
+                        <div class="emoji-tile">
+                            {emoji}<br>
+                            <div class="emoji-label">{label}</div>
+                        </div>
+                        """,
+                        use_container_width=True,
+                        help=label
+                    )
+                    if submitted:
+                        st.session_state.section = label
+                        st.rerun()
 
 # 🧪 Chemical Exposure Section
 elif section == "Chemical Exposure":
