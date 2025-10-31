@@ -22,6 +22,16 @@ if st.session_state.section == "Home":
         "🤲": "Vibration Exposure"
     }
 
+    # Inject JavaScript to handle emoji clicks
+    st.markdown("""
+        <script>
+        function setSection(section) {
+            window.parent.postMessage({type: 'streamlit:setSessionState', key: 'section', value: section}, '*');
+            window.parent.postMessage({type: 'streamlit:rerun'}, '*');
+        }
+        </script>
+    """, unsafe_allow_html=True)
+
     emojis = list(exposures.keys())
     cols = st.columns(3)
 
@@ -31,32 +41,19 @@ if st.session_state.section == "Home":
         for j, emoji in enumerate(row):
             label = exposures[emoji]
             with row_cols[j]:
-                # Create a large emoji button using markdown and a hidden Streamlit button
-                button_html = f"""
+                st.markdown(f"""
                 <div style='text-align:center;'>
-                    <button style='
+                    <button onclick="setSection('{label}')" style='
                         background:none;
                         border:none;
-                        font-size:100px;
+                        font-size:120px;
                         cursor:pointer;
                         padding:0;
                         margin-bottom:10px;
-                    ' onclick="document.getElementById('{label}_btn').click()">
-                        {emoji}
-                    </button>
-                    <div style='font-size:18px; font-weight:bold;'>{label}</div>
+                    '>{emoji}</button>
+                    <div style='font-size:20px; font-weight:bold;'>{label}</div>
                 </div>
-                """
-                st.markdown(button_html, unsafe_allow_html=True)
-                st.button("", key=f"{label}_btn", on_click=lambda l=label: st.session_state.update({"section": l}))
-                # Hide all empty buttons used for emoji triggers
-st.markdown("""
-    <style>
-        button[data-testid="baseButton"] div:empty {
-            display: none;
-        }
-    </style>
-""", unsafe_allow_html=True)
+                """, unsafe_allow_html=True)
 if st.session_state.section == "Chemical Exposure":
     st.title("🧪 Chemical Exposure Assessment")
 
