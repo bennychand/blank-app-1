@@ -3,12 +3,10 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-st.set_page_config(page_title="Exposure Analyzer", layout="wide")
-
+# Initialize session state
 if "section" not in st.session_state:
     st.session_state.section = "Home"
 
-# Routing logic
 section = st.session_state.section
 
 # 🏠 Homepage
@@ -79,6 +77,7 @@ elif section == "Chemical Exposure":
     input_method = st.radio("Input method", ["Manual Entry", "Upload CSV"], key="input_method")
     df = pd.DataFrame()
 
+    # Continue building your chemical exposure logic here...
     if input_method == "Manual Entry":
         chem_name = st.text_input("Chemical Name", key="chem_name")
         values = st.text_area("Exposure Values (comma-separated)", key="manual_values")
